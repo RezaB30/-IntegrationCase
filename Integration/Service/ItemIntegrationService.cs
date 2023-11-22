@@ -15,14 +15,19 @@ public sealed class ItemIntegrationService
     public Result SaveItem(string itemContent)
     {
         // Check the backend to see if the content is already saved.
-        if (ItemIntegrationBackend.FindItemsWithContent(itemContent).Count != 0)
+        lock (itemContent)
         {
-            return new Result(false, $"Duplicate item received with content {itemContent}.");
+            if (ItemIntegrationBackend.FindItemsWithContent(itemContent).Count != 0)
+            {
+                return new Result(false, $"Duplicate item received with content {itemContent}.");
+            }
+
+            var item = ItemIntegrationBackend.SaveItem(itemContent);
+
+            return new Result(true, $"Item with content {itemContent} saved with id {item.Id}");
         }
 
-        var item = ItemIntegrationBackend.SaveItem(itemContent);
-
-        return new Result(true, $"Item with content {itemContent} saved with id {item.Id}");
+       
     }
 
     public List<Item> GetAllItems()

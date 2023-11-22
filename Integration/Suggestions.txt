@@ -1,0 +1,2 @@
+﻿There is a probleem with rapid requests. if so many called with the same content in the timespan for that particular item processing, it takes up the queue.
+To solve that I suggest having a cache for currently saving items and check with the cache first before going to check saved items, that way if some specific item is requested to be saved rapidly it would not take up queue space.
